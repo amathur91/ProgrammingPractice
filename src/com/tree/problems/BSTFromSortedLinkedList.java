@@ -55,41 +55,6 @@ public class BSTFromSortedLinkedList {
         return length;
     }
 }
-class BSTNode{
-    private int data;
-    private BSTNode leftChild;
-    private BSTNode rightChild;
-
-    public BSTNode(int data){
-        this.data = data;
-        this.leftChild = null;
-        this.rightChild = null;
-    }
-
-    public int getData() {
-        return data;
-    }
-
-    public void setData(int data) {
-        this.data = data;
-    }
-
-    public BSTNode getLeftChild() {
-        return leftChild;
-    }
-
-    public void setLeftChild(BSTNode leftChild) {
-        this.leftChild = leftChild;
-    }
-
-    public BSTNode getRightChild() {
-        return rightChild;
-    }
-
-    public void setRightChild(BSTNode rightChild) {
-        this.rightChild = rightChild;
-    }
-}
 
 class ListNode {
     private int data;

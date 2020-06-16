@@ -7,9 +7,9 @@ public class StringInterleavingTest {
 
     @Test
     public void test1(){
-        String s1 = "aabcc";
-        String s2 = "dbbca";
-        String s3 = "aadbbcbcac";
+        String s1 = "algoexpert";
+        String s2 = "your-dream-job";
+        String s3 = "your-algodream-expertjob";
         boolean result = stringInterleaving.isInterleave(s1, s2, s3);
         assert result == true;
     }

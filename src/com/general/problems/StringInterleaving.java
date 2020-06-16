@@ -20,7 +20,7 @@ public class StringInterleaving {
         }
         int m = s1.length();
         int n = s2.length();
-        boolean[][] computeMatrix  = new boolean[m + 1 ][n + 1];
+        boolean[][] computeMatrix  = new boolean[n + 1 ][m + 1];
         computeMatrix[0][0] = true;
 
         //for first row.
@@ -42,9 +42,9 @@ public class StringInterleaving {
         }
 
         //for the remaining computeMatrix
-        for(int i = 1 ; i < m + 1; i++){
+        for(int i = 1 ; i < n + 1; i++){
             int s3Index = i;
-            for(int j = 1; j < n + 1; j++){
+            for(int j = 1; j < m + 1; j++){
                 String targetCharacter = String.valueOf(s3.charAt(s3Index));
                 String mCharacter = String.valueOf(s1.charAt(j - 1));
                 String nCharacter = String.valueOf(s2.charAt(i - 1));
@@ -59,6 +59,6 @@ public class StringInterleaving {
             }
         }
 
-        return computeMatrix[m][n];
+        return computeMatrix[n][m];
     }
 }

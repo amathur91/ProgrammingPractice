@@ -2,131 +2,135 @@ package com.general.problems;
 
 import java.util.*;
 
+/**
+ * https://www.algoexpert.io/questions/Airport%20Connections
+ * Algorithm:
+ * 1. Build a Map from input data to have a connectivity map.
+ * 2. Do DFS and build a map which tells a airport's indirect connectivity.
+ * 3. Now create a structure to store the data generated after DFS.
+ * 4. Sort this data store based on the max connectivity links.
+ * 5. Now create a empty set
+ * 6. Iterate over the data store and pick the airport which has maximum
+ *    connectivity and not included in final set
+ * 7. the check should be that if all of the linked airports are included then exclude it***
+ * 8. At last there might be airports which are isolated and then should be picked.
+ */
 class AirportProgram {
     public static int airportConnections(List<String> airports, List<List<String>> routes, String startingAirport) {
-        HashMap<String, AirportNode> airportNodeMap = new HashMap<>();
-        List<AirportNode> airportNodeList = new ArrayList<>();
-        buildAdjancencyList(airports, routes, airportNodeMap, airportNodeList);
-        //Now lets do DFS
-        doDFSAndUpdateNeighbours(airports, airportNodeMap, airportNodeList);
-        //sort the airportNodeList
-        sortTheNodeListDecending(airportNodeList);
-
-        /**
-         * Start from the starting Airport
-         * 1. Create a Set and add all the neighbours of starting airport
-         * 2. Now start picking from the sorted list
-         * 3. go on and pick if the new set addition is unique
-         */
-        int count = connectAirportsAndFindCount(startingAirport, airportNodeMap, airportNodeList);
-        return count;
-    }
-
-    private static int connectAirportsAndFindCount(String startingAirport, HashMap<String, AirportNode> airportNodeMap, List<AirportNode> airportNodeList) {
-        HashSet<String> finalSet = new HashSet<>();
-        AirportNode startingNode = airportNodeMap.get(startingAirport);
-        for(String existingNeighbours : startingNode.getNeighbourNodes()){
-            finalSet.add(existingNeighbours);
+        if(routes.size() == 0){
+            return airports.size() - 1;
         }
-
-        int count = 0;
-        for(AirportNode airportNode :  airportNodeList){
-            //decide if we should pick this or not
-            Set<String> neighbourNodes = airportNode.getNeighbourNodes();
-            boolean result = checkIfDifferentSets(finalSet, neighbourNodes, startingAirport);
-            String airportName = airportNode.getAirportName();
-            if(result && !finalSet.contains(airportNode.getAirportName()) && !airportName.equalsIgnoreCase(startingAirport)){
-                //add this to final Set
-                count++;
-                for(String node : neighbourNodes){
-                    finalSet.add(node);
-                    finalSet.add(airportNode.getAirportName());
-                }
-            }
-        }
-        return count;
-    }
-
-    private static boolean checkIfDifferentSets(HashSet<String> finalSet, Set<String> neighbourNodes, String startingAirport) {
-        for(String node : neighbourNodes){
-            if(finalSet.contains(node) && !node.equalsIgnoreCase(startingAirport)){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static void doDFSAndUpdateNeighbours(List<String> airports, HashMap<String, AirportNode> airportNodeMap, List<AirportNode> airportNodeList) {
-        HashMap<String, List<String>> newAdditionMap = new HashMap<>();
+        HashMap<String,  List<String>> routeMap = new HashMap<>();
+        HashMap<String, List<String>> connectionMap = new HashMap<>();
         for(String airport : airports){
-            newAdditionMap.put(airport, new ArrayList<>());
+            routeMap.put(airport, new ArrayList<>());
         }
-        for(AirportNode airportNode : airportNodeList){
-            HashSet<String> visited = new HashSet<>();
-            doDFSUtil(airportNode, airportNodeMap, visited, newAdditionMap);
+        buildRouteMap(routes, routeMap, startingAirport, airports);
+        for(String airport : airports){
+            connectionMap.put(airport, new ArrayList<>());
+            Set<String> visitedAirports = new HashSet<>();
+            doDFS(airport, routeMap, connectionMap, airport, visitedAirports);
         }
-
-        for(String airport : newAdditionMap.keySet()){
-            List<String> newNeighbours = newAdditionMap.get(airport);
-            Set<String> neighbourNodes = airportNodeMap.get(airport).getNeighbourNodes();
-            for(String neighbour: newNeighbours){
-                neighbourNodes.add(neighbour);
-            }
+        List<Airport> airportList = new ArrayList<>();
+        for(Map.Entry<String, List<String>> entrySet : connectionMap.entrySet()){
+            Airport airport = new Airport(entrySet.getKey(), entrySet.getValue());
+            airportList.add(airport);
         }
-    }
-
-    private static void sortTheNodeListDecending(List<AirportNode> airportNodeList) {
-        Collections.sort(airportNodeList, new Comparator<AirportNode>() {
-            @Override
-            public int compare(AirportNode o1, AirportNode o2) {
-                return o2.getNeighbourNodes().size() - o1.getNeighbourNodes().size();
-            }
+        Collections.sort(airportList, (o1, o2) -> {
+            return o2.getConnectedAirports().size() - o1.getConnectedAirports().size();
         });
+
+        Set<String> finalSet = new HashSet<>();
+        List<String> initialConnectivity = connectionMap.get(startingAirport);
+        if(null != initialConnectivity){
+            for(String airport : initialConnectivity){
+                finalSet.add(airport);
+            }
+        }
+        int count = 0;
+        for(Airport airport : airportList){
+            if(!checkIfAlreadyPartOfSet(airport, finalSet) && !airport.getAirportName().equalsIgnoreCase(startingAirport)){
+                addCurrentAirportAndConnectityToSet(airport, finalSet);
+                count++;
+            }
+        }
+        if(finalSet.size() + 1 != airportList.size()){
+            count += airportList.size() - (finalSet.size() + 1);
+        }
+        return count;
     }
 
-    private static void doDFSUtil(AirportNode airportNode, HashMap<String, AirportNode> airportNodeMap, HashSet<String> visited, HashMap<String, List<String>> newAdditionMap) {
-        visited.add(airportNode.getAirportName());
-        for(String neighbour : airportNode.getNeighbourNodes()){
-            doDFS(airportNode, airportNodeMap.get(neighbour), airportNodeMap, visited, newAdditionMap);
+    private static void addCurrentAirportAndConnectityToSet(Airport airport, Set<String> finalSet) {
+        finalSet.add(airport.getAirportName());
+        for(String neighbour : airport.getConnectedAirports()){
+            finalSet.add(neighbour);
         }
     }
 
-    private static void doDFS(AirportNode sourceNode, AirportNode currentNode, HashMap<String, AirportNode> airportNodeMap,
-                              HashSet<String> visited, HashMap<String, List<String>> newAdditionMap) {
-        if(!visited.contains(currentNode.getAirportName())) {
-            visited.add(currentNode.getAirportName());
-            newAdditionMap.get(sourceNode.getAirportName()).add(currentNode.getAirportName());
-            for (String neighbour : currentNode.getNeighbourNodes()) {
-                doDFS(sourceNode, airportNodeMap.get(neighbour), airportNodeMap, visited, newAdditionMap);
+    private static boolean checkIfAlreadyPartOfSet(Airport connectedAirports, Set<String> finalSet) {
+        int sizeOfConnected = connectedAirports.getConnectedAirports().size();
+        int count = 0;
+        for(String airport : connectedAirports.getConnectedAirports()){
+            if(finalSet.contains(airport)){
+                count++;
+            }
+        }
+       if(count == sizeOfConnected){
+           return true;
+       }
+        return false;
+    }
+
+    private static void doDFS(String airport, HashMap<String, List<String>> routeMap, HashMap<String, List<String>> connectionMap, String parentAirport, Set<String> visitedAirports) {
+        if(routeMap.containsKey(airport)  && !visitedAirports.contains(airport)){
+            visitedAirports.add(airport);
+            List<String> immediateNeighbours = routeMap.get(airport);
+            for(String immediateNeighbour : immediateNeighbours) {
+                addToParentConnectivityMap(immediateNeighbour, parentAirport, connectionMap);
+                doDFS(immediateNeighbour, routeMap, connectionMap, parentAirport, visitedAirports);
             }
         }
     }
 
-
-    private static void buildAdjancencyList(List<String> airports, List<List<String>> routes, HashMap<String, AirportNode> airportNodeMap, List<AirportNode> airportNodeList) {
-        for(String airport : airports){
-            AirportNode airportNode = new AirportNode();
-            airportNode.setAirportName(airport);
-            airportNodeList.add(airportNode);
-            airportNodeMap.put(airport, airportNode);
+    private static void addToParentConnectivityMap(String connectedNeighbour, String parentAirport, HashMap<String, List<String>> connectionMap) {
+        if(!parentAirport.equalsIgnoreCase(connectedNeighbour)) {
+            if (connectionMap.containsKey(parentAirport)) {
+                connectionMap.get(parentAirport).add(connectedNeighbour);
+            } else {
+                ArrayList connectedNeighbourList = new ArrayList();
+                connectedNeighbourList.add(connectedNeighbour);
+                connectionMap.put(parentAirport, connectedNeighbourList);
+            }
         }
+    }
+
+    private static void buildRouteMap(List<List<String>> routes, HashMap<String, List<String>> routeMap, String startingAirport, List<String> airports) {
         for(List<String> route : routes){
             String source = route.get(0);
             String destination = route.get(1);
-            AirportNode airportNode = airportNodeMap.get(source);
-            airportNode.getNeighbourNodes().add(destination);
+            if(!destination.equalsIgnoreCase(startingAirport)) {
+                if (routeMap.containsKey(source) && routeMap.get(source).size() > 0) {
+                    //append this destination to the List
+                    routeMap.get(source).add(destination);
+                } else {
+                    //create this new entry
+                    ArrayList<String> destinationList = new ArrayList<>();
+                    destinationList.add(destination);
+                    routeMap.put(source, destinationList);
+                }
+            }
         }
     }
+
 }
 
-class AirportNode{
+class Airport{
     private String airportName;
-    private Set<String> neighbourNodes;
-    private int neighbourCount;
+    private List<String> connectedAirports;
 
-    public AirportNode(){
-        this.neighbourNodes = new HashSet<>();
-        this.neighbourCount = 0;
+    public Airport(String airportName, List<String> connectedAirports) {
+        this.airportName = airportName;
+        this.connectedAirports = connectedAirports;
     }
 
     public String getAirportName() {
@@ -137,20 +141,12 @@ class AirportNode{
         this.airportName = airportName;
     }
 
-    public Set<String> getNeighbourNodes() {
-        return neighbourNodes;
+    public List<String> getConnectedAirports() {
+        return connectedAirports;
     }
 
-    public void setNeighbourNodes(Set<String> neighbourNodes) {
-        this.neighbourNodes = neighbourNodes;
-    }
-
-    public int getNeighbourCount() {
-        return neighbourCount;
-    }
-
-    public void setNeighbourCount(int neighbourCount) {
-        this.neighbourCount = neighbourCount;
+    public void setConnectedAirports(List<String> connectedAirports) {
+        this.connectedAirports = connectedAirports;
     }
 }
 

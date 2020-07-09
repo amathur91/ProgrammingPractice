@@ -1,7 +1,6 @@
 package com.tree.problems;
 
 import java.util.HashSet;
-import java.util.concurrent.Phaser;
 
 public class DuplicateSubTree {
     private static boolean duplicate = false;
@@ -16,25 +15,25 @@ public class DuplicateSubTree {
          *             / \
          *            3   4
          */
-        TreeNode rootNode = new TreeNode(1);
-        rootNode.setLeftChild(new TreeNode(2));
-        rootNode.getLeftChild().setLeftChild(new TreeNode(3));
-        rootNode.getLeftChild().setRightChild(new TreeNode(4));
-        rootNode.setRightChild(new TreeNode(5));
-        rootNode.getRightChild().setRightChild(new TreeNode(2));
-        rootNode.getRightChild().getRightChild().setLeftChild(new TreeNode(3));
-        rootNode.getRightChild().getRightChild().setRightChild(new TreeNode(4));
+        BinaryTreeNode rootNode = new BinaryTreeNode(1);
+        rootNode.setLeftChild(new BinaryTreeNode(2));
+        rootNode.getLeftChild().setLeftChild(new BinaryTreeNode(3));
+        rootNode.getLeftChild().setRightChild(new BinaryTreeNode(4));
+        rootNode.setRightChild(new BinaryTreeNode(5));
+        rootNode.getRightChild().setRightChild(new BinaryTreeNode(2));
+        rootNode.getRightChild().getRightChild().setLeftChild(new BinaryTreeNode(3));
+        rootNode.getRightChild().getRightChild().setRightChild(new BinaryTreeNode(4));
         boolean duplicateSubTreeExists = findDuplicateSubTree(rootNode);
         System.out.println("Duplicate Subtree exist : " + duplicateSubTreeExists);
     }
 
-    private static boolean findDuplicateSubTree(TreeNode rootNode) {
+    private static boolean findDuplicateSubTree(BinaryTreeNode rootNode) {
         HashSet<String> subTreeSet = new HashSet<>();
         lookForDuplicateSubTree(rootNode, subTreeSet);
         return duplicate;
     }
 
-    private static String lookForDuplicateSubTree(TreeNode rootNode, HashSet<String> subTreeSet) {
+    private static String lookForDuplicateSubTree(BinaryTreeNode rootNode, HashSet<String> subTreeSet) {
       if(rootNode != null){
           String leftChild = lookForDuplicateSubTree(rootNode.getLeftChild(), subTreeSet);
           String rightChild = lookForDuplicateSubTree(rootNode.getRightChild(), subTreeSet);
@@ -50,7 +49,7 @@ public class DuplicateSubTree {
       return "";
     }
 
-    private static boolean isLeafNode(TreeNode rootNode) {
+    private static boolean isLeafNode(BinaryTreeNode rootNode) {
         return rootNode.getLeftChild() == null && rootNode.getRightChild() == null;
     }
 }

@@ -1,11 +1,11 @@
 package com.tree.problems;
 
-public class TreeNode {
+public class BinaryTreeNode {
     private int data;
-    private TreeNode leftChild;
-    private TreeNode rightChild;
+    private BinaryTreeNode leftChild;
+    private BinaryTreeNode rightChild;
     
-    public TreeNode(int data){
+    public BinaryTreeNode(int data){
         this.data = data;
         leftChild = null;
         rightChild = null;
@@ -19,19 +19,19 @@ public class TreeNode {
         this.data = data;
     }
 
-    public TreeNode getLeftChild() {
+    public BinaryTreeNode getLeftChild() {
         return leftChild;
     }
 
-    public void setLeftChild(TreeNode leftChild) {
+    public void setLeftChild(BinaryTreeNode leftChild) {
         this.leftChild = leftChild;
     }
 
-    public TreeNode getRightChild() {
+    public BinaryTreeNode getRightChild() {
         return rightChild;
     }
 
-    public void setRightChild(TreeNode rightChild) {
+    public void setRightChild(BinaryTreeNode rightChild) {
         this.rightChild = rightChild;
     }
 }

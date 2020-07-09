@@ -1,7 +1,5 @@
 package com.arrayproblems;
 
-import com.tree.problems.TreeNode;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 

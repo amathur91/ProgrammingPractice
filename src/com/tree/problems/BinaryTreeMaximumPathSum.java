@@ -14,38 +14,13 @@ public class BinaryTreeMaximumPathSum {
 
     private Integer findMaximumSum(TreeNode root, MaximumSum maximumSum) {
         if(root != null){
-            Integer leftSubtreeSum = findMaximumSum(root.left, maximumSum);
-            if(leftSubtreeSum != null && leftSubtreeSum > maximumSum.getData()){
-                maximumSum.setData(leftSubtreeSum);
-            }
-            Integer rightSubtreeSum = findMaximumSum(root.right, maximumSum);
-            if(rightSubtreeSum != null && rightSubtreeSum > maximumSum.getData()){
-                maximumSum.setData(rightSubtreeSum);
-            }
-
-            if(root.val > maximumSum.getData()){
-                maximumSum.setData(root.val);
-            }
-            if(leftSubtreeSum != null && (root.val + leftSubtreeSum) > maximumSum.getData()){
-                maximumSum.setData(root.val + leftSubtreeSum);
-            }
-            if(rightSubtreeSum != null && (root.val + rightSubtreeSum) > maximumSum.getData()){
-                maximumSum.setData(root.val + rightSubtreeSum);
-            }
-            int leftPrioritySum = 0;
-            int rightPrioritySum = 0;
-            if(leftSubtreeSum != null){
-                leftPrioritySum += leftSubtreeSum;
-            }
-            if(rightSubtreeSum != null){
-                rightPrioritySum += rightSubtreeSum;
-            }
-            if(leftPrioritySum + rightPrioritySum + root.val > maximumSum.getData()){
-                maximumSum.setData(leftPrioritySum + rightPrioritySum + root.val);
-            }
-            return Math.max((root.val+ leftPrioritySum), (root.val+rightPrioritySum));
+            Integer leftSubtreeSum = Math.max(0,findMaximumSum(root.left, maximumSum));
+            Integer rightSubtreeSum = Math.max(0,findMaximumSum(root.right, maximumSum));
+            maximumSum.setData(Math.max(maximumSum.getData(), root.val
+            + leftSubtreeSum + rightSubtreeSum));
+            return Math.max(leftSubtreeSum, rightSubtreeSum) + root.val;
         }
-        return null;
+        return 0;
     }
 }
 class TreeNode {

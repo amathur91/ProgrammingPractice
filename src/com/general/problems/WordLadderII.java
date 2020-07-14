@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
  * https://leetcode.com/problems/word-ladder-ii/
  */
 public class WordLadderII {
+    private static boolean success = false;
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
         HashMap<String, Boolean> wordLookupMap = new HashMap<>();
         for(String word : wordList){
@@ -40,8 +41,12 @@ public class WordLadderII {
             if(workingSet.size() <= minData.getMinData()){
                 minData.setMinData(workingSet.size());
             }
+            success = true;
         }else {
             HashSet<String> possibleWords = findStringsWithLowTransformation(currentWord, wordList, wordLookupMap);
+            if(possibleWords != null && workingSet != null){
+                possibleWords.removeAll(workingSet);
+            }
             if(workingSet.size() < minData.getMinData()) {
                 if (possibleWords.contains(endWord)) {
                     wordLookupMap.put(endWord, Boolean.FALSE);
@@ -58,8 +63,11 @@ public class WordLadderII {
                             wordLookupMap.put(possibleWord, Boolean.FALSE);
                             workingSet.add(possibleWord);
                             exploreTheTransformation(possibleWord, wordList, wordLookupMap, workingSet, endWord, finalResult, minData);
-                            wordLookupMap.put(possibleWord, Boolean.TRUE);
-                            workingSet.remove(possibleWord);
+                            if(success) {
+                                wordLookupMap.put(possibleWord, Boolean.TRUE);
+                                workingSet.remove(possibleWord);
+                                success = false;
+                            }
                         }
                     }
                 }

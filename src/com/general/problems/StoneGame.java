@@ -5,16 +5,18 @@ import java.util.HashMap;
 
 /**
  * Accepted Solution for Stone Game.
+ * Runtime: 30 ms, faster than 47.24% of Java online submissions for Stone Game III.
+ * Memory Usage: 115.3 MB, less than 6.06% of Java online submissions for Stone Game III.
  */
 public class StoneGame {
     public String stoneGameIII(int[] stoneValue) {
         HashMap<Integer, Integer> cache = new HashMap<>();
-        int aliceMaxScore = performPickup(stoneValue, 0, cache);
-        int[] dpArray = new int[stoneValue.length];
-        for(int index = 0; index < dpArray.length; index++){
-            System.out.print(dpArray[index] + " ");
+//        int aliceMaxScore = performPickup(stoneValue, 0, cache); Commenting the Recursive Approach
+        int[] dpArray = new int[4];     //Memory Optimization
+        for(int index = stoneValue.length - 1; index >= 0; index--){
+            performPickupDP(stoneValue,index, dpArray);
         }
-        System.out.println();
+        int aliceMaxScore = dpArray[0];
         if(aliceMaxScore > 0){
             return "Alice";
         }
@@ -46,4 +48,17 @@ public class StoneGame {
         return result;
     }
 
+    private void performPickupDP(int[] stoneValue, int index,int[] dpArray){
+            int playerPick1Stone = stoneValue[index] - dpArray[(index + 1) % 4];
+            int playerPick2Stone = Integer.MIN_VALUE;
+            int playerPick3Stone = Integer.MIN_VALUE;
+            if (index + 1 < stoneValue.length) {
+                playerPick2Stone = stoneValue[index] + stoneValue[index + 1] - dpArray[(index + 2)%4];
+            }
+            if (index + 2 < stoneValue.length) {
+                playerPick3Stone = stoneValue[index] + stoneValue[index + 1] + stoneValue[index + 2] - dpArray[(index + 3)%4];
+            }
+            int result = Math.max(playerPick1Stone, Math.max(playerPick2Stone, playerPick3Stone));
+            dpArray[(index)%4] = result;
+    }
 }

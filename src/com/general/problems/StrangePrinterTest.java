@@ -54,4 +54,10 @@ public class StrangePrinterTest {
         int result = strangePrinter.strangePrinter(input);
         assert result == 19;
     }
+    @Test
+    public void test8(){
+        String input = "dddccbdbababaddcbcaabdbdddcccddbbaabddb";
+        int result = strangePrinter.strangePrinter(input);
+        assert result == 15;
+    }
 }

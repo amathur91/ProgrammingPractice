@@ -21,12 +21,11 @@ import java.util.SortedMap;
  * abc -> abc-> func(abc) = 3
  *
  *
- * So I will drop duplicates from the string and apply the logic
+ * https://leetcode.com/problems/strange-printer/
+ * Success Rate : 141/201
  */
 public class StrangePrinter {
     public int strangePrinter(String s) {
-        // Work on a recursive solution to solve this problem.
-        // the best test case is "tbgtgb" which takes 4 iterations..Refer to the copy in the table.
         if(null == s || s.length() == 0){
             return 0;
         }
@@ -34,9 +33,7 @@ public class StrangePrinter {
             return 1;
         }
         String filteredString = dropDuplicates(s);
-        int leftPointer = 0;
-        int rightPointer = filteredString.length() - 1;
-        int finalResult = findThePrintCounter(filteredString, leftPointer, rightPointer);
+        int finalResult = findTheMinimumPrintCostDP(filteredString);
         return finalResult;
     }
 
@@ -54,23 +51,26 @@ public class StrangePrinter {
         }
         return sb.toString();
     }
-
-    private int findThePrintCounter(String s, int leftPointer, int rightPointer) {
-        if(leftPointer >= 0 && leftPointer < s.length() && rightPointer > leftPointer) {
-            // add check for the left and right
-            String leftCharacter = String.valueOf(s.charAt(leftPointer));
-            String rightCharacter = String.valueOf(s.charAt(rightPointer));
-
-            if(leftCharacter.equalsIgnoreCase(rightCharacter)){
-                return 1 + findThePrintCounter(s, leftPointer + 1, rightPointer - 1);
-            }else{
-                int result1 = findThePrintCounter(s, leftPointer + 1, rightPointer);
-                int result2 = findThePrintCounter(s, leftPointer, rightPointer - 1);
-                return 1 + Math.min(result1, result2);
-            }
-        }else if( leftPointer == rightPointer){
-            return 1;
+    private int findTheMinimumPrintCostDP(String input){
+       int[][] computeArray = new int[input.length()][input.length()];
+       for(int rowIndex = 0; rowIndex < input.length(); rowIndex++){
+          computeArray[rowIndex][rowIndex] = 1; //Why? because the cost to print 1 character is 1
+       }
+       for(int windowSize = 1; windowSize < input.length(); windowSize++) {
+        int leftPointer = 0;
+        int rightPointer = leftPointer + windowSize;
+        while (rightPointer < input.length()) {
+         String leftCharacter = String.valueOf(input.charAt(leftPointer));
+         String rightCharacter = String.valueOf(input.charAt(rightPointer));
+         if (leftCharacter.equalsIgnoreCase(rightCharacter)) {
+          computeArray[leftPointer][rightPointer] =  Math.min(computeArray[leftPointer + 1][rightPointer], computeArray[leftPointer][rightPointer-1]);
+         } else {
+          computeArray[leftPointer][rightPointer] = 1 + Math.min(computeArray[leftPointer + 1][rightPointer], computeArray[leftPointer][rightPointer - 1]);
+         }
+         leftPointer++;
+         rightPointer++;
         }
-        return 0;
+       }
+       return computeArray[0][input.length() - 1];
     }
 }

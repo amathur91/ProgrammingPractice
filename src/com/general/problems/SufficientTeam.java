@@ -3,8 +3,10 @@ package com.general.problems;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 /**
  * Leetcode : https://leetcode.com/problems/smallest-sufficient-team/submissions/
+ * Level : Hard
  * Time Complexity : O(2^n) with optimization in place by reducing the search space.
  * Leetcode results:
  * Runtime: 106 ms, faster than 26.21% of Java online submissions for Smallest Sufficient Team.

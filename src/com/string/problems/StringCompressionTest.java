@@ -68,11 +68,20 @@ public class StringCompressionTest {
         int result = stringCompression.getLengthOfOptimalCompression(inputString, k);
         assert result == 7;
     }
+
     @Test
     public void test8(){
-        String inputString = "cdcbccddcaccbabdadcbda";
-        int k = 20;
+        String inputString = "llllllllllttttttttt";
+        int k = 1;
         int result = stringCompression.getLengthOfOptimalCompression(inputString, k);
-        //assert result == 7;
+        assert result == 4;
+    }
+
+    @Test
+    public void test10(){
+        String inputString = "kgklijflgagdniohkhjhnoo";
+        int k = 21;
+        int result = stringCompression.getLengthOfOptimalCompression(inputString, k);
+        assert result == 2;
     }
 }

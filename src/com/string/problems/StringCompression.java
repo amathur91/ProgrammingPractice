@@ -17,6 +17,7 @@ public class StringCompression {
             if(!isMultipleOccurance){
                 return s.length() - k;
             }
+
             return findTheMinimalString(s, characterStrings, countArray, 0, k);
         }
         return compressString.length();

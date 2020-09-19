@@ -1,16 +1,16 @@
 package com.tree.problems;
 
 public class BSTFromSortedLinkedList {
-    private static ListNode root;
+    private static ListNode1 root;
 
     public static void main(String args[]){
-        root = new ListNode(1);
-        root.setNext(new ListNode(2));
-        root.getNext().setNext(new ListNode(3));
-        root.getNext().getNext().setNext(new ListNode(4));
-        root.getNext().getNext().getNext().setNext(new ListNode(5));
-        root.getNext().getNext().getNext().getNext().setNext(new ListNode(6));
-        root.getNext().getNext().getNext().getNext().getNext().setNext(new ListNode(7));
+        root = new ListNode1(1);
+        root.setNext(new ListNode1(2));
+        root.getNext().setNext(new ListNode1(3));
+        root.getNext().getNext().setNext(new ListNode1(4));
+        root.getNext().getNext().getNext().setNext(new ListNode1(5));
+        root.getNext().getNext().getNext().getNext().setNext(new ListNode1(6));
+        root.getNext().getNext().getNext().getNext().getNext().setNext(new ListNode1(7));
         BSTNode rootNode = buildBSTFromLinkedList();
         performInOrderTraversal(rootNode);
     }
@@ -46,7 +46,7 @@ public class BSTFromSortedLinkedList {
         return rootNode;
     }
 
-    private static int getLengthOfList(ListNode root) {
+    private static int getLengthOfList(ListNode1 root) {
         int length = 0;
         while(root != null){
             length++;
@@ -56,11 +56,11 @@ public class BSTFromSortedLinkedList {
     }
 }
 
-class ListNode {
+ class ListNode1 {
     private int data;
-    private ListNode next;
+    private ListNode1 next;
 
-    public ListNode(int data){
+    public ListNode1(int data){
         this.data = data;
     }
 
@@ -72,11 +72,11 @@ class ListNode {
         this.data = data;
     }
 
-    public ListNode getNext() {
+    public ListNode1 getNext() {
         return next;
     }
 
-    public void setNext(ListNode next) {
+    public void setNext(ListNode1 next) {
         this.next = next;
     }
 }
